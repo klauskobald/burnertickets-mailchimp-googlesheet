@@ -5,10 +5,10 @@
  * Time: 09:38
  */
 
+chdir(__DIR__);
 
 require 'config.inc.php';
 
-chdir(__DIR__);
 const DATA_PATH = "./var/data.json";
 const RUN_FILE = "./var/run";
 if (!is_dir(dirname(DATA_PATH))) mkdir(dirname(DATA_PATH));
