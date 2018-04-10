@@ -95,8 +95,8 @@ SETUP CRON
 /etc/cron.hourly/burnertickets_pull
 ############
 #!/bin/bash
-php /var/www/html/burners.kobald.com/burner_tickets_to_mailchimp.php > /var/log/burnertickets_pull.log
-php /var/www/html/burners.kobald.com/add_to_google_sheet.php >> /var/log/burnertickets_pull.log
+php /var/www/html/burners/burner_tickets_to_mailchimp.php > /var/log/burnertickets_pull.log
+php /var/www/html/burners/add_to_google_sheet.php >> /var/log/burnertickets_pull.log
 #
 ############
 
