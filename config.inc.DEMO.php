@@ -19,3 +19,6 @@ $mailchimp_list_id = '';
 # Google
 #   Example 1-8LfFh6HO9381111198XZXf6J3KTtPGwlfPabHRgXrg
 $spreadsheetId = "";
+
+# Dreams Platform
+$dreams_url="https://YOUR-DREAMS-PLATFORM.herokuapp.com/";

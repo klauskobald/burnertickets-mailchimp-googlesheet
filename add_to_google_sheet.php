@@ -6,8 +6,12 @@
  */
 
 // MAIN CODE IS ALL THE WAY DOWN
-
+e(basename(__FILE__));
 chdir(__DIR__);
+if(!file_exists("./var/new")) {
+	e("no changes");
+	die();
+}
 require 'config.inc.php';
 const DATA_PATH = "./var/data.json";
 

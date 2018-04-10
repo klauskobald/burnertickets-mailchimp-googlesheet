@@ -97,6 +97,10 @@ SETUP CRON
 #!/bin/bash
 php /var/www/html/burners/burner_tickets_to_mailchimp.php > /var/log/burnertickets_pull.log
 php /var/www/html/burners/add_to_google_sheet.php >> /var/log/burnertickets_pull.log
+
+# if you are using the dreams platform activate this:
+#php /var/www/html/burners/push_to_dreams.php >> /var/log/burnertickets_pull.log
+
 #
 ############
 

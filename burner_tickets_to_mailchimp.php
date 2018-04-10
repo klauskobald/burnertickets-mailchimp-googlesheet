@@ -4,6 +4,7 @@
  * Date: 04.04.18
  * Time: 09:38
  */
+e(basename(__FILE__));
 
 chdir(__DIR__);
 
@@ -11,6 +12,8 @@ require 'config.inc.php';
 
 const DATA_PATH = "./var/data.json";
 const RUN_FILE = "./var/run";
+const NEW_FILE = "./var/new";
+@unlink(NEW_FILE);
 if (!is_dir(dirname(DATA_PATH))) mkdir(dirname(DATA_PATH));
 touch(DATA_PATH);
 if (!is_dir(dirname(DATA_PATH))) die("- cannot create " . DATA_PATH);
@@ -57,12 +60,12 @@ foreach ($bt["message"] as $u) {
 		]
 	);
 
-	$str = file_get_contents("https://burnertickets.com/BurnerTicketing/API/index.php?method=GrabUsersCustomEventInfo&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey&userId=".$u["UserId"]);
+	$str = file_get_contents("https://burnertickets.com/BurnerTicketing/API/index.php?method=GrabUsersCustomEventInfo&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey&userId=" . $u["UserId"]);
 	$userCustomInfo = json_decode($str, JSON_OBJECT_AS_ARRAY);
-	$u["extra"] =array();
-	foreach((array)$userCustomInfo["message"] as $m) {
-	    $mkey=str_replace($burnertickets_eventId."_","",$m["meta_key"]);
-		$u["extra"][$mkey]=$m["meta_value"];
+	$u["extra"] = array();
+	foreach ((array)$userCustomInfo["message"] as $m) {
+		$mkey = str_replace($burnertickets_eventId . "_", "", $m["meta_key"]);
+		$u["extra"][$mkey] = $m["meta_value"];
 	}
 
 	$data["records"][$key] = $u;
@@ -70,13 +73,14 @@ foreach ($bt["message"] as $u) {
 		$ct++;
 		e("  insert ok");
 	} else {
-	    e("  failed:",$result["title"]);
+		e("  failed:", $result["title"]);
 		$failed++;
 	}
 }
 if ($ct || DEBUG_FORCE_REWRITE) {
 	$data["updated_at"] = date("Y-m-d H:i:s");
 	file_put_contents(DATA_PATH, json_encode($data));
+	touch(NEW_FILE);
 }
 unlink(RUN_FILE);
 if ($failed) e("failed:", $failed);
