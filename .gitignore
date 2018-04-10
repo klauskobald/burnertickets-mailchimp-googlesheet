@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+/config.inc.php
+/google-api-php-client/vendor/
+/google-api-php-client/composer.lock
+/google-api-php-client/LICENSE
+/var/data.json
+.idea/
