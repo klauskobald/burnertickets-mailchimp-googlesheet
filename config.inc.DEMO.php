@@ -12,6 +12,28 @@ const DEBUG_FORCE_REWRITE=false;
 $burnertickets_apiKey = "";
 $burnertickets_eventId = "";
 
+# these are the burnerticket standardfields
+$fields = [
+	"UserId", "TicketNumber", "FirstName", "LastName", "Address", "Address2", "Zipcode", "City", "State", "Country", "Phone", "EmailAddress"
+];
+
+# these fields have to match the questionaire that burnertickets have setup for you
+$extras = [
+	"BurnerName",
+	"Attend2017",
+	"FirstBurn",
+	"OtherBurns",
+	"FoundFrom",
+	"ReadDesciption",
+	"Principles",
+	"Cocreate",
+	"consent",
+	"LNT",
+	"Skills",
+	"Rules"
+];
+
+
 # Mailchimp
 $mailchimp_apikey = '';
 $mailchimp_list_id = '';

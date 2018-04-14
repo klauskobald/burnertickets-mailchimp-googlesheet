@@ -8,7 +8,7 @@
 // MAIN CODE IS ALL THE WAY DOWN
 e(basename(__FILE__));
 chdir(__DIR__);
-if(!file_exists("./var/new")) {
+if (!file_exists("./var/new")) {
 	e("no changes");
 	die();
 }
@@ -24,9 +24,9 @@ define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 // at ~/.credentials/sheets.googleapis.com-php-quickstart.json
 define(
 	'SCOPES', implode(
-	' ', array(
-		Google_Service_Sheets::SPREADSHEETS)
-)
+		' ', array(
+			Google_Service_Sheets::SPREADSHEETS)
+	)
 );
 
 date_default_timezone_set('America/New_York'); // Prevent DateTime tz exception
@@ -101,9 +101,7 @@ $range = 'A1:A';
 $response = $service->spreadsheets_values->get($spreadsheetId, $range);
 $currentValues = [];
 
-$fields=[
-	"UserId","TicketNumber","FirstName","LastName","Address","Address2","Zipcode","City","State","Country", "Phone","EmailAddress"
-];
+
 
 $conf = ["valueInputOption" => "RAW"];
 $range = 'A1';
@@ -114,22 +112,21 @@ if ($vals) {
 	foreach ($vals as $a) {
 		$currentValues[$a[0]] = true;
 	}
-	$writeFirstRow=false;
-}
-else
-	$writeFirstRow=true;
+	$writeFirstRow = false;
+} else
+	$writeFirstRow = true;
 
 $data = json_decode(file_get_contents(DATA_PATH), JSON_OBJECT_AS_ARRAY);
 
 e("update google sheet");
 foreach ((array)$data["records"] as $u) {
 
-	if($writeFirstRow){
-		$writeFirstRow=false;
-		$d=$fields;
-		$d[]="ANSWERS =>";
-		foreach($u["extra"] as $k=>$v)
-			$d[]=strval($k);
+	if ($writeFirstRow) {
+		$writeFirstRow = false;
+		$d = $fields;
+		$d[] = "ANSWERS =>";
+		foreach ($extras as $k)
+			$d[] = $k;
 		$postBody->setValues(["values" => array_values($d)]);
 		$response = $service->spreadsheets_values->append($spreadsheetId, $range, $postBody, $conf);
 
@@ -138,13 +135,13 @@ foreach ((array)$data["records"] as $u) {
 	if ($currentValues[$u["UserId"]])
 		continue;
 
-	e("append",$u["UserId"]);
+	e("append", $u["UserId"]);
 	$d = [];
-	foreach($fields as $f)
-		$d[]=strval($u[$f]);
-	$d[]="";
-	foreach($u["extra"] as $v)
-		$d[]=strval($v);
+	foreach ($fields as $f)
+		$d[] = strval($u[$f]);
+	$d[] = "";
+	foreach ($extras as $k)
+		$d[] = strval($u['extra'][$k]);
 
 	$postBody->setValues(["values" => array_values($d)]);
 	$response = $service->spreadsheets_values->append($spreadsheetId, $range, $postBody, $conf);

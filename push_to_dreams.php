@@ -10,7 +10,7 @@
  */
 e(basename(__FILE__));
 chdir(__DIR__);
-if(!file_exists("./var/new")) {
+if(!file_exists("./var/new") && !$argv[1]) {
 	e("no changes");
 	die();
 }
