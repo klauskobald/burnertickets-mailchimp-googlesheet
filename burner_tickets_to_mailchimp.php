@@ -13,17 +13,22 @@ require 'config.inc.php';
 const DATA_PATH = "./var/data.json";
 const RUN_FILE = "./var/run";
 const NEW_FILE = "./var/new";
-@unlink(NEW_FILE);
+
+
+
 if (!is_dir(dirname(DATA_PATH))) mkdir(dirname(DATA_PATH));
-touch(DATA_PATH);
+@touch(DATA_PATH);
 if (!is_dir(dirname(DATA_PATH))) die("- cannot create " . DATA_PATH);
 
-if (is_file(RUN_FILE)) die("- process is locked. found " . RUN_FILE);
-touch(RUN_FILE);
+if (is_file(RUN_FILE) && filectime(RUN_FILE)>time()-300) die("- process is locked. found " . RUN_FILE);
+@touch(RUN_FILE);
 
 e("query burnertickets");
-$str = file_get_contents("https://burnertickets.com/BurnerTicketing/API/index.php?method=GetUsersWithTicketsEventId&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey");
+$req="https://burnertickets.com/BurnerTicketing/API/index.php?method=GetUsersWithTicketsEventId&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey";
+e($req);
+$str = file_get_contents($req);
 $bt = json_decode($str, JSON_OBJECT_AS_ARRAY);
+#print_r($bt); die(); # VIEW THE SHIT
 
 if ($bt["code"] != 1) die('- unexpected result: ' . $str);
 
@@ -60,8 +65,11 @@ foreach ($bt["message"] as $u) {
 		]
 	);
 
-	$str = file_get_contents("https://burnertickets.com/BurnerTicketing/API/index.php?method=GrabUsersCustomEventInfo&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey&userId=" . $u["UserId"]);
+	$req="https://burnertickets.com/BurnerTicketing/API/index.php?method=GrabUsersCustomEventInfo&eventId=$burnertickets_eventId&apiKey=$burnertickets_apiKey&userId=" . $u["UserId"];
+	e($req);
+	$str = file_get_contents($req);
 	$userCustomInfo = json_decode($str, JSON_OBJECT_AS_ARRAY);
+#	print_r($userCustomInfo);
 	$u["extra"] = array();
 	foreach ((array)$userCustomInfo["message"] as $m) {
 		$mkey = str_replace($burnertickets_eventId . "_", "", $m["meta_key"]);
@@ -82,6 +90,9 @@ if ($ct || DEBUG_FORCE_REWRITE) {
 	file_put_contents(DATA_PATH, json_encode($data));
 	touch(NEW_FILE);
 }
+
+
+
 unlink(RUN_FILE);
 if ($failed) e("failed:", $failed);
 e("done.");

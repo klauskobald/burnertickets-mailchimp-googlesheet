@@ -18,8 +18,10 @@ if(!file_exists("./var/new") && !$argv[1]) {
 require 'config.inc.php';
 e("starting import on dreams platform");
 $r = file_get_contents($dreams_url . "import");
-if (strpos("$r", "Import File"))
+if (strpos("$r", "Import File")) {
 	e("sucess");
+	@unlink("./var/new");
+}
 else
 	e("failed");
 
